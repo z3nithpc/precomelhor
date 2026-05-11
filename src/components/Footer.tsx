@@ -1,66 +1,73 @@
-import Link from "next/link";
-import { TrendingDown } from "lucide-react";
+"use client";
 
-const links = {
-  "Navegação": [
-    { href: "/", label: "Início" },
-    { href: "/categorias", label: "Categorias" },
-    { href: "/produtos", label: "Produtos" },
-    { href: "/comparar", label: "Comparar" },
-  ],
-  "Ajuda": [
-    { href: "/sobre", label: "Sobre nós" },
-    { href: "/faq", label: "Perguntas frequentes" },
-    { href: "/contato", label: "Contato" },
-  ],
-  "Legal": [
-    { href: "/privacidade", label: "Privacidade" },
-    { href: "/termos", label: "Termos de uso" },
-  ],
-};
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Home, Bookmark, Search, BarChart2 } from "lucide-react";
+import { useShoppingList } from "@/lib/use-shopping-list";
+
+const bottomNav = [
+  { href: "/", label: "Início", icon: Home },
+  { href: "/lista", label: "Lista", icon: Bookmark },
+  { href: "/produtos", label: "Buscar", icon: Search },
+  { href: "/comparar", label: "Comparar", icon: BarChart2 },
+];
 
 export default function Footer() {
+  const pathname = usePathname();
+  const { count, mounted } = useShoppingList();
+
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-3">
-              <TrendingDown className="w-6 h-6 text-primary-400" />
-              <span className="text-lg font-bold text-white">PrecoMelhor</span>
-            </Link>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              Compare preços de milhares de produtos e sempre encontre o melhor negócio.
+    <>
+      {/* Desktop footer */}
+      <footer className="hidden md:block bg-white border-t border-gray-100 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-gray-400">
+              &copy; {new Date().getFullYear()} PrecoMelhor. Todos os direitos reservados.
             </p>
+            <nav className="flex items-center gap-5">
+              <Link href="/lista" className="text-sm text-gray-400 hover:text-primary-600 transition-colors font-medium">
+                Minha Lista
+              </Link>
+              <Link href="/sobre" className="text-sm text-gray-400 hover:text-primary-600 transition-colors">Sobre</Link>
+              <Link href="/privacidade" className="text-sm text-gray-400 hover:text-primary-600 transition-colors">Privacidade</Link>
+              <Link href="/termos" className="text-sm text-gray-400 hover:text-primary-600 transition-colors">Termos</Link>
+            </nav>
           </div>
-
-          {/* Links */}
-          {Object.entries(links).map(([section, items]) => (
-            <div key={section}>
-              <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-                {section}
-              </h3>
-              <ul className="space-y-2">
-                {items.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="text-sm text-gray-400 hover:text-white transition-colors"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
+      </footer>
 
-        <div className="border-t border-gray-800 mt-10 pt-6 text-center text-xs text-gray-500">
-          &copy; {new Date().getFullYear()} PrecoMelhor. Todos os direitos reservados.
+      {/* Mobile bottom nav */}
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200">
+        <div className="grid grid-cols-4 h-16">
+          {bottomNav.map(({ href, label, icon: Icon }) => {
+            const active = pathname === href;
+            const isLista = href === "/lista";
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition-colors relative ${
+                  active ? "text-primary-600" : "text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                <div className="relative">
+                  <Icon className={`w-5 h-5 ${active ? "stroke-[2.5px]" : ""}`} />
+                  {isLista && mounted && count > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 bg-primary-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
+                      {count > 9 ? "9+" : count}
+                    </span>
+                  )}
+                </div>
+                {label}
+              </Link>
+            );
+          })}
         </div>
-      </div>
-    </footer>
+      </nav>
+
+      {/* Spacer for mobile nav */}
+      <div className="md:hidden h-16" />
+    </>
   );
 }

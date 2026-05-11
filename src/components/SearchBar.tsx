@@ -23,15 +23,15 @@ export default function SearchBar({ initialValue = "" }: { initialValue?: string
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Buscar produto, marca ou categoria..."
-        className="w-full pl-4 pr-12 py-2.5 text-sm border border-gray-300 rounded-xl bg-gray-50
-          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
-          placeholder:text-gray-400 transition-all"
+        className="w-full pl-5 pr-14 py-3.5 text-sm border-2 border-gray-200 rounded-2xl bg-white
+          focus:outline-none focus:border-primary-500
+          placeholder:text-gray-400 transition-all shadow-sm"
       />
       <button
         type="submit"
         aria-label="Buscar"
-        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-white bg-primary-600
-          hover:bg-primary-700 rounded-lg transition-colors"
+        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white bg-primary-600
+          hover:bg-primary-700 rounded-xl transition-colors"
       >
         <Search className="w-4 h-4" />
       </button>
